@@ -40,7 +40,7 @@ namespace FileExchanger
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
 
-			services.AddIdentity<User, IdentityRole>(conf=> 
+			services.AddIdentity<User, IdentityRole>(conf =>
 			{
 				//conf.Tokens.ProviderMap.Add("Default", new TokenProviderDescriptor(typeof(IUserTwoFactorTokenProvider<User>)));
 
@@ -49,7 +49,8 @@ namespace FileExchanger
 				conf.SignIn.RequireConfirmedEmail = false; //<--- must be true
 			})
 				.AddDefaultUI(UIFramework.Bootstrap4)
-				.AddEntityFrameworkStores<ApplicationDbContext>();
+				.AddEntityFrameworkStores<ApplicationDbContext>()
+				.AddDefaultTokenProviders();
 
 			services.AddSignalR(conf=> conf.EnableDetailedErrors = true);
 
