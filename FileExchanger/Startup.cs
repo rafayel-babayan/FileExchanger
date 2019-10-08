@@ -42,6 +42,8 @@ namespace FileExchanger
 
 			services.AddIdentity<User, IdentityRole>(conf=> 
 			{
+				//conf.Tokens.ProviderMap.Add("Default", new TokenProviderDescriptor(typeof(IUserTwoFactorTokenProvider<User>)));
+
 				//Включает обязательное потверждение email. 
 				//Enables required email confirmation.
 				conf.SignIn.RequireConfirmedEmail = false; //<--- must be true
