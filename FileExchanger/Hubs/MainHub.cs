@@ -50,13 +50,18 @@ namespace FileExchanger.Hubs
 				.Where(uid => uid.ConnectionId == Context.ConnectionId)
 				.FirstOrDefault();
 
-			if (connection != null)
-				_context.Connections.Remove(connection);
+			if (connection != null) 
+			{
+				_context.Connections.Remove(connection); // Removing current connection
+				await _context.SaveChangesAsync();
 
-			if (connections.Count < 1) // Disconnecting user
-				(await _userManager.GetUserAsync(Context.User)).IsConnected = false;
-
-			await _context.SaveChangesAsync();
+				if (_context.Connections.Count() < 1) 
+				{
+					(await _userManager.GetUserAsync(Context.User)).IsConnected = false; // Disconnecting user
+					await _context.SaveChangesAsync();
+				}
+			}
+			
 			await base.OnDisconnectedAsync(exception);
 		}
 	}
