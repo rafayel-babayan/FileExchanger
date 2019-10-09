@@ -19,4 +19,9 @@
 
 @section Scripts {
     @RenderSection("Scripts", required: false)
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script src="~/lib/signalr/signalr.min.js"></script>
+        <script src="~/js/mainhub.js"></script>
+    }
 }

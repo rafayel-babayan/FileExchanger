@@ -24,16 +24,17 @@ namespace FileExchanger.Hubs
 		{
 			var connection = new Connection { ConnectionId = Context.ConnectionId };
 
-			var user = await _context.Users // Get current user
+			var user = await _context.Users // Get current user with connection list
 				.Include(usr => usr.Connections)
 				.Where(uid => uid.Id == _userManager.GetUserId(Context.User))
 				.FirstOrDefaultAsync();
 
 			if (user.Connections == null)
 				user.Connections = new List<Connection>();
+														 // If user don't have connections list, 
+			user.Connections.Add(connection);           // create list and add connection
 
-			user.Connections.Add(connection); // If user don't have connections list, 
-											  // create list and add connection
+			(await _userManager.GetUserAsync(Context.User)).IsConnected = true; // Connecting user
 
 			await _context.SaveChangesAsync();
 			await base.OnConnectedAsync();
@@ -41,13 +42,19 @@ namespace FileExchanger.Hubs
 
 		public override async Task OnDisconnectedAsync(Exception exception)
 		{
-			var connection = await _context.Connections
-				.Where(uid => uid.ConnectionId == Context.ConnectionId
-					&& uid.UserId == _userManager.GetUserId(Context.User))
-				.FirstOrDefaultAsync();
+			var connections = await _context.Connections // Get current user's all connections
+				.Where(uid => uid.UserId == _userManager.GetUserId(Context.User))
+				.ToListAsync();
+
+			var connection = connections // Get current user's current connection
+				.Where(uid => uid.ConnectionId == Context.ConnectionId)
+				.FirstOrDefault();
 
 			if (connection != null)
 				_context.Connections.Remove(connection);
+
+			if (connections.Count < 1) // Disconnecting user
+				(await _userManager.GetUserAsync(Context.User)).IsConnected = false;
 
 			await _context.SaveChangesAsync();
 			await base.OnDisconnectedAsync(exception);
