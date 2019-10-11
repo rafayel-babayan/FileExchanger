@@ -4,6 +4,7 @@
 
 .mc {
     margin: 10px;
+    padding:10px;
     height: 55vh;
     border-radius: 5px;
     background-color: white;
@@ -22,4 +23,20 @@
 hr {
     margin: 0;
     background-color: #007bff;
+}
+
+.msg {
+    background-color: #007bff;
+    border-radius: 30px;
+    color: white;
+    min-width: 27px;
+    padding: 5px 15px 5px 15px;
+}
+
+.in {
+    border-bottom-left-radius: 0px;
+}
+
+.out {
+    border-bottom-right-radius: 0px;
 }
