@@ -1,0 +1,16 @@
+﻿@model User
+<div class="m pointer" onclick="onClick()">
+    <div class="font-weight-bolder">
+        @Model.Email
+    </div>
+    <div class="font-weight-lighter">
+        Online
+    </div>
+    <hr />
+</div>
+<script>
+    function onClick() {
+        console.log("@Model.Email");
+        alert ("@Model.Email");
+    };
+</script>

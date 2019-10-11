@@ -5,13 +5,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using FileExchanger.Models;
+using FileExchanger.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace FileExchanger.Controllers
 {
 	public class HomeController : Controller
 	{
+		private readonly ApplicationDbContext _context;
+		private readonly UserManager<User> _userManager;
+		public HomeController(ApplicationDbContext context, UserManager<User> userManager)
+		{
+			_context = context;
+			_userManager = userManager;
+		}
+
 		public IActionResult Index()
 		{
+			ViewBag.OnlineUsers = _context.Users
+				.Where(usr => usr.IsConnected && usr.Id != _userManager.GetUserId(User))
+				.ToList(); // Get all online users and send to view
+
 			return View();
 		}
 

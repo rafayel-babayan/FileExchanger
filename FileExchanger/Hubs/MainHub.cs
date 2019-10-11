@@ -53,13 +53,14 @@ namespace FileExchanger.Hubs
 			if (connection != null) 
 			{
 				_context.Connections.Remove(connection); // Removing current connection
-				await _context.SaveChangesAsync();
+				connections.Remove(connection);
 
-				if (_context.Connections.Count() < 1) 
+				if (connections.Count < 1) 
 				{
-					(await _userManager.GetUserAsync(Context.User)).IsConnected = false; // Disconnecting user
-					await _context.SaveChangesAsync();
+					(await _userManager.GetUserAsync(Context.User)).IsConnected = false; // Disconnecting user					
 				}
+
+				await _context.SaveChangesAsync();
 			}
 			
 			await base.OnDisconnectedAsync(exception);

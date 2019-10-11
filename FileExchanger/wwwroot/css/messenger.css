@@ -1,0 +1,25 @@
+﻿.m {
+    margin: 2px 10px 2px 10px;
+}
+
+.mc {
+    margin: 10px;
+    height: 55vh;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.p0 {
+    padding: 0px;
+}
+
+.c {
+    background-color: #00000024;
+    border-radius: 5px;
+    height: 70vh;
+}
+
+hr {
+    margin: 0;
+    background-color: #007bff;
+}

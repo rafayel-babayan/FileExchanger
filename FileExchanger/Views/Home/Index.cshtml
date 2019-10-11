@@ -1,8 +1,47 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @if (User.Identity.IsAuthenticated)
+    {
+    <div class="c row">
+        <div class="p0 col-4 ">
+            <div style="overflow-y:scroll; height:69vh">
+                @foreach (User item in ViewBag.OnlineUsers)
+                {
+                    await Html.RenderPartialAsync("_OnlineUserPartial", item);
+                }
+            </div>
+        </div>
+        <div class="p0 col-8">
+            <div class="mc border border-primary">
+                <div class="container">
+                    <div class="row" style="height:inherit">
+
+                    </div>
+                </div>
+            </div>
+            <div style="margin:0px 0px 0px 10px" >
+                <div class="row">
+                    <div class="col-10" style="padding-right:0px">
+                        <textarea class="w-100" placeholder="
+                                                     Enter your message here..."></textarea>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-primary">
+                            <i class="fa fa-paperclip"></i>
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fa fa-send"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
+    }
 </div>
+@section Styles{ 
+    <link  rel="stylesheet" href="~/css/messenger.css"/>
+}
