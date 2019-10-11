@@ -1,6 +1,10 @@
-﻿.m {
+﻿.m{
     margin: 2px 10px 2px 10px;
+    color:black;
 }
+    .m:hover {
+        color: darkgray;
+    }
 
 .mc {
     margin: 10px;

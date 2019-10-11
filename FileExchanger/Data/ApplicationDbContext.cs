@@ -17,5 +17,6 @@ namespace FileExchanger.Data
 		public DbSet<Group> Groups { get; set; }
 		public DbSet<UserGroup> UserGroups { get; set; }
 		public DbSet<Connection> Connections { get; set; }
+		public DbSet<Message> Messages { get; set; }
 	}
 }

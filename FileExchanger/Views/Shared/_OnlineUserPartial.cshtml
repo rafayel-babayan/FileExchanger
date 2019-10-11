@@ -1,5 +1,5 @@
 ﻿@model User
-<div class="m pointer" onclick="onClick()">
+<a class="m" asp-controller="AjaxRequests" asp-action="ConnectToGroup" asp-route-userId="@Model.Id" data-ajax="true">
     <div class="font-weight-bolder">
         @Model.Email
     </div>
@@ -7,10 +7,4 @@
         Online
     </div>
     <hr />
-</div>
-<script>
-    function onClick() {
-        console.log("@Model.Email");
-        alert ("@Model.Email");
-    };
-</script>
+</a>

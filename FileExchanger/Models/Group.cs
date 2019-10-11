@@ -6,5 +6,6 @@ namespace FileExchanger.Models
 	{
 		public string Id { get; set; }
 		public virtual ICollection<UserGroup> UserGroups { get; set; }
+		public virtual ICollection<Message> Messages { get; set; }
 	}
 }
