@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using FileExchanger.Helpers;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace FileExchanger.Controllers
 {
@@ -19,17 +22,28 @@ namespace FileExchanger.Controllers
 
 
 
-		public IActionResult ConnectToGroup(string userId)
+		public async Task<IActionResult> ConnectToGroup(string userId)
 		{
+			
 			if (Request.IsAjaxRequest())
 			{
-				var thisUserIs = _userManager.GetUserId(User);
+				var thisUserId = _userManager.GetUserId(User);
+
+				var groups = _context.Groups
+			   .Include(grp => grp.UserGroups).ToList();
+
+				foreach(var item in groups)
+				{
+					if(item.Users.Contains(await _userManager.FindByIdAsync(thisUserId))
+						&& item.Users.Contains(await _userManager.GetUserAsync(User)))
+						   BadRequest("Group already exists!");
+				};
 
 				var group = new Group
 				{
 					UserGroups = new List<UserGroup>
 					{
-						{ new UserGroup{UserId = thisUserIs} },
+						{ new UserGroup{UserId = thisUserId} },
 						{ new UserGroup{UserId = userId} }
 					}
 				};
@@ -37,6 +51,7 @@ namespace FileExchanger.Controllers
 				_context.Groups.Add(group);
 				_context.SaveChanges();
 			}
+
 			return BadRequest();
 		}
 	}
