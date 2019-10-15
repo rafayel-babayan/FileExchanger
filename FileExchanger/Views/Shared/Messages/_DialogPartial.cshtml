@@ -1,0 +1,9 @@
+﻿@model IEnumerable<Message>
+@inject UserManager<User> _userManager
+@foreach (var message in Model)
+{
+    var view = message.AuthorId == _userManager.GetUserId(User) ? "Messages/_OutgoingMessagePartial" :
+        message.AuthorId== null? "Messages/_NeutralMessagePartial" : "Messages/_IncomingMessagePartial";
+
+    await Html.RenderPartialAsync(view, message);
+}

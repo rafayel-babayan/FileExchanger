@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using FileExchanger.Helpers;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System;
+using FileExchanger.ViewModels;
 
 namespace FileExchanger.Controllers
 {
@@ -20,39 +22,80 @@ namespace FileExchanger.Controllers
 			_userManager = userManager;
 		}
 
+        #region Messanger 
+        public async Task<IActionResult> ConnectToGroup(string userId)
+        {
+            if (Request.IsAjaxRequest())
+            {
+                IEnumerable<Message> messages = null;
+
+                User thisUser = await _userManager.GetUserAsync(User);
+                User otherUser = await _userManager.FindByIdAsync(userId);
+
+                var groups = _context.Groups
+                                     .Include(grp => grp.UserGroups)
+                                     .ToList();
+
+                if (groups.Any(item => item.Users.Contains(thisUser)
+                                  && item.Users.Contains(otherUser)))
+                {
+                    string id = groups.SingleOrDefault(x => x.Users.Contains(thisUser) && x.Users.Contains(otherUser)).Id; // If group exist
+                    messages = _context.Messages.Where(msg => msg.GroupId == id).ToList();                 // loading messages
+                }
+                else
+                {
+                    var group = new Group            // If group not exist
+                    {                               // creating new group 
+                        UserGroups = new List<UserGroup>
+                        {
+                            { new UserGroup { UserId = thisUser.Id } },
+                            { new UserGroup { UserId = otherUser.Id } }
+                        },
+
+                        Messages = new List<Message>
+                        {
+                            { new Message { Content = "Group created.", SendDate = DateTime.Now } },
+                            { new Message { Content = $"You and {otherUser.UserName} are now friends.", SendDate = DateTime.Now } }
+                        }
+                    };
 
 
-		public async Task<IActionResult> ConnectToGroup(string userId)
-		{
-			
-			if (Request.IsAjaxRequest())
-			{
-				var thisUserId = _userManager.GetUserId(User);
+                    _context.Groups.Add(group);
+                    _context.SaveChanges();
 
-				var groups = _context.Groups
-			   .Include(grp => grp.UserGroups).ToList();
+                    messages = group.Messages;
+                }
 
-				foreach(var item in groups)
-				{
-					if(item.Users.Contains(await _userManager.FindByIdAsync(thisUserId))
-						&& item.Users.Contains(await _userManager.GetUserAsync(User)))
-						   BadRequest("Group already exists!");
-				};
+               messages =  messages.OrderBy(x => x.SendDate);
 
-				var group = new Group
-				{
-					UserGroups = new List<UserGroup>
-					{
-						{ new UserGroup{UserId = thisUserId} },
-						{ new UserGroup{UserId = userId} }
-					}
-				};
+                return PartialView("Messages/_DialogPartial", messages); // returning partial gialog
+            }
 
-				_context.Groups.Add(group);
-				_context.SaveChanges();
-			}
+            return BadRequest();
+        }
 
-			return BadRequest();
-		}
-	}
+        public async Task<IActionResult> SendMessage(MessageViewModel model)
+        {
+            User thisUser = await _userManager.GetUserAsync(User);
+            User otherUser = await _userManager.FindByIdAsync(model.To);
+
+            Group grp = _context.Groups
+                .Include(x => x.UserGroups)
+                .ToList()
+                .SingleOrDefault(x=>x.Users.Contains(thisUser) && x.Users.Contains(otherUser));
+
+            Message msg = new Message
+            {
+                AuthorId = thisUser.Id,
+                Content = model.Content,
+                SendDate = DateTime.Now,
+                GroupId = grp.Id
+            };
+            await _context.Messages.AddAsync(msg);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+        #endregion
+    }
 }

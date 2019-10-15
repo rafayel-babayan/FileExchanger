@@ -1,5 +1,8 @@
-﻿@model User
-<a class="m" asp-controller="AjaxRequests" asp-action="ConnectToGroup" asp-route-userId="@Model.Id" data-ajax="true">
+﻿@*Unobrusive ajax is connect to AjaxRequests controller / ConnectToGroup action which the return partial view
+    and automatic update message container (#msgContainer), Besides on click occures event(messanger.js) which the update "To" field in index page(MessageViewModel)*@
+
+@model User
+<a class="m" asp-controller="AjaxRequests" asp-action="ConnectToGroup" asp-route-userId="@Model.Id" data-ajax="true" data-ajax-update="#msgContainer" onclick="onDialogClick('@Model.Id')">
     <div class="font-weight-bolder">
         @Model.Email
     </div>
