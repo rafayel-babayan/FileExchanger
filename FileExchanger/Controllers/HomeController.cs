@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using FileExchanger.Models;
 using FileExchanger.Data;
 using Microsoft.AspNetCore.Identity;
+using FileExchanger.Hubs;
 
 namespace FileExchanger.Controllers
 {
-	public class HomeController : Controller
+    public class HomeController : Controller
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<User> _userManager;
@@ -22,8 +20,10 @@ namespace FileExchanger.Controllers
 
 		public IActionResult Index()
 		{
+           
 			ViewBag.OnlineUsers = _context.Users
-				.Where(usr => usr.IsConnected && usr.Id != _userManager.GetUserId(User))
+				.Where(usr => MainHub._connections.HasConnected(usr.Id) 
+                                && usr.Id != _userManager.GetUserId(User))
 				.ToList(); // Get all online users and send to view
 
 			return View();

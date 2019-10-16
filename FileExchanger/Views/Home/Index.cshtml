@@ -18,21 +18,26 @@
         <div class="p0 col-8">
             <div class="mc border border-primary">
                 <div id="msgContainer" class="container">
-                    Select dialog. please
                 </div>
             </div>
-            <div style="margin:0px 0px 0px 10px" >
+            <div class="row border border-danger">
+                <div class="col-12" style="height:50px">
+
+                </div>
+            </div>
+            <div style="margin:0px 0px 0px 10px">
                 <div class="row">
-                    <form asp-controller="AjaxRequests" asp-action="SendMessage" class="col-12 d-flex" data-ajax="true" method="post">
+                    <form class="col-12 d-flex"  asp-controller="AjaxRequests" asp-action="SendMessage" data-ajax="true" method="post">
                         <div class="col-10 " style="padding-right:0px">
                             <textarea asp-for="Content" class="w-100" placeholder="
                                                          Enter your message here..."></textarea>
                         </div>
                         <input type="hidden" asp-for="To" />
+                        <input id="fileInput" class="hidden" type="file" multiple />
                         <div class="col-2">
-                            <button class="btn btn-primary">
+                            <div id="fileButton" class="btn btn-primary">
                                 <i class="fa fa-paperclip"></i>
-                            </button>
+                            </div>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fa fa-send"></i>
                             </button>

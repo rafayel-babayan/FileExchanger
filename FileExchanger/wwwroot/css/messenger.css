@@ -17,12 +17,13 @@
 
 .p0 {
     padding: 0px;
+    height:auto;
 }
 
 .c {
     background-color: #00000024;
     border-radius: 5px;
-    height: 70vh;
+    height: auto;
 }
 
 hr {
@@ -49,4 +50,8 @@ hr {
 
 .col-12{
     padding:0px !important;
+}
+
+.hidden{
+    display:none;
 }

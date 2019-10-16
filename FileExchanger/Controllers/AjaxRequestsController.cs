@@ -12,14 +12,18 @@ using FileExchanger.ViewModels;
 
 namespace FileExchanger.Controllers
 {
-	public class AjaxRequestsController : Controller
+    public class AjaxRequestsController : Controller
     {
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<User> _userManager;
-		public AjaxRequestsController(ApplicationDbContext context, UserManager<User> userManager)
+        private readonly Services.NotificationService _ntfService;
+        public AjaxRequestsController(ApplicationDbContext context, 
+                                      UserManager<User> userManager, 
+                                      Services.NotificationService ntfService)
 		{
 			_context = context;
 			_userManager = userManager;
+            _ntfService = ntfService;
 		}
 
         #region Messanger 
@@ -76,6 +80,9 @@ namespace FileExchanger.Controllers
 
         public async Task<IActionResult> SendMessage(MessageViewModel model)
         {
+            if (model.Content == null || model.To == null)
+                return BadRequest();
+
             User thisUser = await _userManager.GetUserAsync(User);
             User otherUser = await _userManager.FindByIdAsync(model.To);
 
@@ -93,6 +100,8 @@ namespace FileExchanger.Controllers
             };
             await _context.Messages.AddAsync(msg);
             await _context.SaveChangesAsync();
+
+            _ntfService.OnNewMessage(msg);
 
             return Ok();
         }
