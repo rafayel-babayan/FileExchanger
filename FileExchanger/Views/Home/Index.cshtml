@@ -29,7 +29,7 @@
                 <div class="row">
                     <form class="col-12 d-flex"  asp-controller="AjaxRequests" asp-action="SendMessage" data-ajax="true" method="post">
                         <div class="col-10 " style="padding-right:0px">
-                            <textarea asp-for="Content" class="w-100" placeholder="
+                            <textarea id="txtContainer" asp-for="Content" class="w-100" placeholder="
                                                          Enter your message here..."></textarea>
                         </div>
                         <input type="hidden" asp-for="To" />
@@ -38,7 +38,7 @@
                             <div id="fileButton" class="btn btn-primary">
                                 <i class="fa fa-paperclip"></i>
                             </div>
-                            <button type="submit" class="btn btn-primary">
+                            <button id="sbmButton" type="submit" class="btn btn-primary">
                                 <i class="fa fa-send"></i>
                             </button>
                         </div>

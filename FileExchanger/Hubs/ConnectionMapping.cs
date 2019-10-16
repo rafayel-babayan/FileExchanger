@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FileExchanger.Hubs
 {
@@ -8,7 +10,7 @@ namespace FileExchanger.Hubs
         /// <summary>
         /// Connection container
         /// </summary>
-        private readonly Dictionary<T, HashSet<string>> _connections = 
+        private readonly Dictionary<T, HashSet<string>> _connections =
             new Dictionary<T, HashSet<string>>();
         /// <summary>
         ///  Returns key's connections 
@@ -21,13 +23,13 @@ namespace FileExchanger.Hubs
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public bool HasConnected(T key) 
+        public bool HasConnected(T key)
         {
             lock (_connections)
             {
                 HashSet<string> connections;
 
-                if(!_connections.TryGetValue(key, out connections))
+                if (!_connections.TryGetValue(key, out connections))
                     return false;
                 return connections.Count > 0;
             }
@@ -40,9 +42,9 @@ namespace FileExchanger.Hubs
         public void Add(T key, string connectionId)
         {
             HashSet<string> connections;
-            lock(_connections)
+            lock (_connections)
             {
-                if(!_connections.TryGetValue(key, out connections))
+                if (!_connections.TryGetValue(key, out connections))
                 {
                     connections = new HashSet<string>();
                     _connections.Add(key, connections);
@@ -79,7 +81,7 @@ namespace FileExchanger.Hubs
             {
                 HashSet<string> connections;
 
-                if (!_connections.TryGetValue(key, out connections)) 
+                if (!_connections.TryGetValue(key, out connections))
                 {
                     return;
                 }

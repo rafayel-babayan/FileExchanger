@@ -9,25 +9,30 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FileExchanger.Services
 {
-	public class NotificationService : Controller
+	public class NotificationService 
 	{
 		private readonly IHubContext<Hubs.MainHub> _hubContext;
         private readonly UserManager<User> _userManager;
-        public NotificationService(IHubContext<Hubs.MainHub> hubContext, UserManager<User> userManager)
+        private readonly IViewRenderService _renderService;
+        public NotificationService(IHubContext<Hubs.MainHub> hubContext, UserManager<User> userManager, IViewRenderService renderService)
 		{
 			_hubContext = hubContext;
             _userManager = userManager;
+            _renderService = renderService;
 		}
 
         public void OnNewMessage(Message msg)
         {
-            var initiatorIds = Hubs.MainHub._connections.GetConnections(_userManager.GetUserId(User));
+            var initiatorIds = Hubs.MainHub._connections.GetConnections(msg.AuthorId);
 
-            PartialViewResult inView = PartialView("Messages/_IncomingMessagePartial", msg);
-            PartialViewResult outView = PartialView("Messages/_OutgoingMessagePartial", msg);
+            var inView = _renderService.RenderToStringAsync("Messages/_IncomingMessagePartial", msg);
+            var outView = _renderService.RenderToStringAsync("Messages/_OutgoingMessagePartial", msg);
 
-            _hubContext.Clients.AllExcept(initiatorIds.ToList()).SendAsync("ReceiveMessage", outView);
-            _hubContext.Clients.Users(initiatorIds.ToList()).SendAsync("SendMessage", inView);
-        }
+            var others = _hubContext.Clients.AllExcept(initiatorIds.ToList());
+            others.SendAsync("ReceiveMessage", inView);
+
+            var i = _hubContext.Clients.Clients(initiatorIds.ToList());
+            i.SendAsync("SendMessage", outView);
+        }                                                               
     }
 }

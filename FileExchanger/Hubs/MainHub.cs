@@ -4,14 +4,10 @@ using Microsoft.AspNetCore.SignalR;
 using FileExchanger.Models;
 using Microsoft.AspNetCore.Identity;
 using FileExchanger.Data;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Collections;
 
 namespace FileExchanger.Hubs
 {
-	public class MainHub : Hub
+    public class MainHub : Hub
 	{
 		//private readonly UserManager<User> _userManager;
 		//private readonly ApplicationDbContext _context;

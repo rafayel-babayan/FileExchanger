@@ -14,6 +14,7 @@ using FileExchanger.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using FileExchanger.Models;
+using FileExchanger.Services;
 
 namespace FileExchanger
 {
@@ -30,7 +31,8 @@ namespace FileExchanger
 		public void ConfigureServices(IServiceCollection services)
 		{
             services.AddTransient<Services.NotificationService>();
-			services.Configure<CookiePolicyOptions>(options =>
+            services.AddTransient<IViewRenderService, ViewRenderService>();
+            services.Configure<CookiePolicyOptions>(options =>
 			{
 				// This lambda determines whether user consent for non-essential cookies is needed for a given request.
 				options.CheckConsentNeeded = context => true;
